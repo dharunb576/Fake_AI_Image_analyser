@@ -1,0 +1,47 @@
+# ===== R =====
+.Rhistory
+.Rapp.history
+.RData
+.Ruserdata
+.Rproj.user/
+*.Rproj
+.Renviron
+.Rprofile
+*.Rcheck/
+*.tar.gz
+renv/library/
+renv/staging/
+renv/local/
+
+# ===== Python / virtualenv =====
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.so
+
+# ===== Project data (too large for GitHub) =====
+data/*
+!data/dataset.csv
+
+# ===== Optional: ignore trained models too (4.3 MB) =====
+# models/
+
+# ===== OS / editors =====
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*~
+
+# ===== Misc =====
+*.log
