@@ -1,0 +1,6 @@
+Traditional Machine Learning.
+Random Forest and advanced feature engineering.
+CNN feature extraction + Random Forest.
+MobileNetV2.
+EfficientNetB0 with RGB.
+EfficientNetB0 with YCbCr.
