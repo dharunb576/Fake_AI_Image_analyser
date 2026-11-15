@@ -1,122 +1,161 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useEffect, useRef, useState } from "react";
+import { ShieldCheck } from "lucide-react";
+
+import { AboutSection } from "./components/AboutSection";
+import { DetectionResult } from "./components/DetectionResult";
+import { Hero } from "./components/Hero";
+import { ImageUploader } from "./components/ImageUploader";
+import { Navbar } from "./components/Navbar";
+import { detectImage } from "./services/api";
+import type { DetectionResponse } from "./types/detection";
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
+const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+const ALLOWED_EXTENSIONS = /\.(jpe?g|png|webp)$/i;
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState("");
+  const [result, setResult] = useState<DetectionResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const detectorRef = useRef<HTMLElement>(null);
+  const previewUrlRef = useRef("");
+
+  useEffect(() => {
+    return () => {
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+      }
+    };
+  }, []);
+
+  const clearPreview = () => {
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current);
+      previewUrlRef.current = "";
+    }
+
+    setPreview("");
+  };
+
+  const updatePreview = (selected: File) => {
+    clearPreview();
+
+    const url = URL.createObjectURL(selected);
+    previewUrlRef.current = url;
+    setPreview(url);
+  };
+
+  const selectImage = (selected?: File) => {
+    if (!selected) return;
+
+    setError("");
+    setResult(null);
+
+    if (!ALLOWED_EXTENSIONS.test(selected.name)) {
+      setError("Please select a JPG, JPEG, PNG or WEBP image.");
+      return;
+    }
+
+    if (selected.type && !ALLOWED_TYPES.includes(selected.type)) {
+      setError("Please select a JPG, JPEG, PNG or WEBP image.");
+      return;
+    }
+
+    if (selected.size === 0) {
+      setError("The selected file is empty.");
+      return;
+    }
+
+    if (selected.size > MAX_FILE_SIZE) {
+      setError("Maximum image size is 10 MB.");
+      return;
+    }
+
+    setFile(selected);
+    updatePreview(selected);
+  };
+
+  const analyzeImage = async () => {
+    if (!file || loading) return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await detectImage(file);
+      setResult(response);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Unknown error";
+      setError(`Image detection failed: ${message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const reset = () => {
+    clearPreview();
+    setFile(null);
+    setResult(null);
+    setError("");
+
+    detectorRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+    <div id="top" className="min-h-screen bg-[#080b14] text-white">
+      <Navbar />
+
+      <main>
+        <Hero />
+
+        <section
+          ref={detectorRef}
+          id="detector"
+          className="scroll-mt-24 px-4 pb-24 sm:px-6"
         >
-          Count is {count}
-        </button>
-      </section>
+          <div className="mx-auto max-w-5xl">
+            <h2 className="mb-3 text-center text-3xl font-bold">
+              Image Detection
+            </h2>
 
-      <div className="ticks"></div>
+            <p className="mb-10 text-center text-sm text-slate-400">
+              Upload an image to begin your analysis.
+            </p>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+            <div className="grid gap-7 lg:grid-cols-2">
+              <ImageUploader
+                file={file}
+                preview={preview}
+                error={error}
+                loading={loading}
+                onSelect={selectImage}
+                onAnalyze={analyzeImage}
+                onReset={reset}
+              />
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+              <DetectionResult
+                result={result}
+                loading={loading}
+                onReset={reset}
+              />
+            </div>
+          </div>
+        </section>
+
+        <AboutSection />
+      </main>
+
+      <footer className="border-t border-white/10 px-4 py-7 text-center text-xs text-slate-500">
+        <p>© 2026 TrueLens AI · AI Fake Photo Detector</p>
+        <p className="mt-2 flex items-center justify-center gap-1.5">
+          <ShieldCheck size={13} />
+          EfficientNetB0 · TensorFlow · FastAPI
+        </p>
+      </footer>
+    </div>
+  );
 }
 
-export default App
+export default App;
