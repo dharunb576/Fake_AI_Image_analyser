@@ -1,4 +1,7 @@
-# ===== R =====
+# ==========================================
+# R
+# ==========================================
+
 .Rhistory
 .Rapp.history
 .RData
@@ -9,39 +12,134 @@
 .Rprofile
 *.Rcheck/
 *.tar.gz
+
+# Keep renv.lock (and activation scripts) tracked, but not the library
 renv/library/
 renv/staging/
 renv/local/
 
-# ===== Python / virtualenv =====
+# ==========================================
+# Python
+# ==========================================
+
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+*.egg-info/
+*.egg
+.eggs/
+build/
+dist/
+
+# Virtual environments
 .venv/
 venv/
 env/
 ENV/
-__pycache__/
-*.py[cod]
-*.egg-info/
-.ipynb_checkpoints/
+
+# Python tooling and test artifacts
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
-*.so
+.tox/
+.nox/
+.hypothesis/
+.coverage
+.coverage.*
+coverage.xml
+*.lcov
+htmlcov/
+pip-log.txt
+pip-wheel-metadata/
 
-# ===== Project data (too large for GitHub) =====
+# ==========================================
+# Machine learning artifacts
+# ==========================================
+# New model artifacts are ignored to avoid accidental large commits.
+# Models already tracked in this repository remain tracked.
+
+*.keras
+*.h5
+*.hdf5
+*.pkl
+*.joblib
+*.rds
+*.onnx
+*.pb
+*.tflite
+saved_model/
+
+.keras/
+.tensorflow/
+wandb/
+mlruns/
+lightning_logs/
+checkpoints/
+
+# ==========================================
+# Datasets and generated features
+# ==========================================
+# Ignore the large datasets but keep the small, tracked dataset file.
+
 data/*
 !data/dataset.csv
+!data/.gitkeep
 
-# ===== Optional: ignore trained models too (4.3 MB) =====
-# models/
+# ==========================================
+# Node.js / React / Vite
+# ==========================================
 
-# ===== OS / editors =====
+node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/coverage/
+frontend/build/
+.vite/
+*.tsbuildinfo
+.eslintcache
+
+# ==========================================
+# Environment variables and secrets
+# ==========================================
+
+.env
+.env.*
+!.env.example
+
+# ==========================================
+# Editors and operating systems
+# ==========================================
+
+.vscode/
+.idea/
+.fleet/
 .DS_Store
 Thumbs.db
 desktop.ini
-.vscode/
-.idea/
 *.swp
+*.swo
 *~
 
-# ===== Misc =====
+# ==========================================
+# Logs and temporary files
+# ==========================================
+
+logs/
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.tmp
+*.temp
+*.bak
+*.orig
+.cache/
+
+# ==========================================
+# Jupyter
+# ==========================================
+
+.ipynb_checkpoints/
