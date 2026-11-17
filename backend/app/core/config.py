@@ -4,8 +4,8 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 # Model configuration
-MODEL_NAME = "EfficientNetB0"
-MODEL_PATH = PROJECT_ROOT / "models" / "efficientnetb0_best.keras"
+MODEL_NAME = "EfficientNetB0v2"
+MODEL_PATH = PROJECT_ROOT / "models" / "efficientnetb0_v2" /"continued_best_model.keras"
 
 # Image configuration
 IMAGE_HEIGHT = 224

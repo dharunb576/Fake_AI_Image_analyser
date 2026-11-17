@@ -38,7 +38,7 @@ dist/
 venv/
 env/
 ENV/
-
+data_v2/
 # Python tooling and test artifacts
 .pytest_cache/
 .mypy_cache/

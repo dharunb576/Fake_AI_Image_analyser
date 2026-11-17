@@ -14,7 +14,7 @@ class ImagePredictor:
         self.model = None
 
     def load_model(self):
-        """Load the trained EfficientNetB0 model."""
+        """Load the trained EfficientNetB0v2 model."""
 
         if not MODEL_PATH.exists():
             raise FileNotFoundError(
